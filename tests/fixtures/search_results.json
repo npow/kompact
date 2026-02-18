@@ -1,0 +1,213 @@
+{
+  "search_metadata": {
+    "query": "how to build a distributed database",
+    "engine": "SearchEngine/4.2.0",
+    "total_results": 14820000,
+    "search_time_ms": 342,
+    "safe_search": true,
+    "language": "en",
+    "region": "us",
+    "page": 1,
+    "results_per_page": 10
+  },
+  "results": [
+    {
+      "position": 1,
+      "title": "Building a Distributed Database from Scratch: A Complete Guide",
+      "url": "https://distributed-systems-blog.dev/building-distributed-database-guide",
+      "display_url": "distributed-systems-blog.dev \u203a guide",
+      "description": "A comprehensive tutorial covering the fundamentals of distributed database design, including consensus protocols, data partitioning strategies, replication, and consistency models. Updated for 2025 with examples using Raft and multi-Paxos.",
+      "date_published": "2025-02-14",
+      "cached_url": "https://cache.searchengine.com/cache?q=abc123",
+      "source_type": "blog",
+      "rich_snippet": {
+        "type": "article",
+        "reading_time_minutes": 45,
+        "author": "Dr. Sarah Chen",
+        "rating": 4.9,
+        "review_count": 287
+      }
+    },
+    {
+      "position": 2,
+      "title": "CockroachDB Architecture: How a Distributed SQL Database Works",
+      "url": "https://www.cockroachlabs.com/docs/stable/architecture/overview.html",
+      "display_url": "cockroachlabs.com \u203a docs \u203a architecture",
+      "description": "Deep dive into CockroachDB's distributed architecture covering the SQL layer, transaction layer, distribution layer, replication layer, and storage layer. Learn how a production-grade distributed database handles automatic sharding and failover.",
+      "date_published": "2025-01-20",
+      "cached_url": "https://cache.searchengine.com/cache?q=def456",
+      "source_type": "documentation",
+      "rich_snippet": {
+        "type": "technical_doc",
+        "reading_time_minutes": 30,
+        "author": "CockroachDB Team",
+        "rating": null,
+        "review_count": null
+      }
+    },
+    {
+      "position": 3,
+      "title": "Designing Data-Intensive Applications - Chapter 5: Replication",
+      "url": "https://dataintensive.net/chapters/replication",
+      "display_url": "dataintensive.net \u203a chapters",
+      "description": "Martin Kleppmann's authoritative guide on replication in distributed systems. Covers leader-based replication, multi-leader replication, leaderless replication, and the tradeoffs between synchronous and asynchronous approaches.",
+      "date_published": "2024-11-01",
+      "cached_url": "https://cache.searchengine.com/cache?q=ghi789",
+      "source_type": "book",
+      "rich_snippet": {
+        "type": "book",
+        "reading_time_minutes": 60,
+        "author": "Martin Kleppmann",
+        "rating": 4.8,
+        "review_count": 1542
+      }
+    },
+    {
+      "position": 4,
+      "title": "How TiDB Implements a Distributed Database with MySQL Compatibility",
+      "url": "https://pingcap.com/blog/how-tidb-implements-distributed-database",
+      "display_url": "pingcap.com \u203a blog",
+      "description": "Technical blog post explaining TiDB's architecture including TiKV (distributed key-value storage), PD (placement driver), and TiDB server (SQL parsing). Includes performance benchmarks comparing single-node MySQL to distributed TiDB clusters.",
+      "date_published": "2025-03-08",
+      "cached_url": "https://cache.searchengine.com/cache?q=jkl012",
+      "source_type": "blog",
+      "rich_snippet": {
+        "type": "article",
+        "reading_time_minutes": 25,
+        "author": "PingCAP Engineering",
+        "rating": 4.6,
+        "review_count": 89
+      }
+    },
+    {
+      "position": 5,
+      "title": "CS 244B: Distributed Systems - Stanford University (Lecture Notes)",
+      "url": "https://cs244b.stanford.edu/notes/distributed-databases",
+      "display_url": "cs244b.stanford.edu \u203a notes",
+      "description": "Lecture notes from Stanford's graduate course on distributed systems covering CAP theorem, ACID vs BASE, vector clocks, Lamport timestamps, two-phase commit, three-phase commit, and the FLP impossibility result.",
+      "date_published": "2025-01-10",
+      "cached_url": "https://cache.searchengine.com/cache?q=mno345",
+      "source_type": "academic",
+      "rich_snippet": {
+        "type": "course",
+        "reading_time_minutes": 90,
+        "author": "Prof. John Ousterhout",
+        "rating": 4.7,
+        "review_count": 312
+      }
+    },
+    {
+      "position": 6,
+      "title": "YouTube: Building a Distributed Key-Value Store in Go (Full Tutorial)",
+      "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ_fake",
+      "display_url": "youtube.com \u203a watch",
+      "description": "A 3-hour video tutorial walking through building a distributed key-value store from scratch in Go. Covers implementing the Raft consensus algorithm, building a WAL (write-ahead log), and setting up cluster membership changes.",
+      "date_published": "2025-02-28",
+      "cached_url": null,
+      "source_type": "video",
+      "rich_snippet": {
+        "type": "video",
+        "duration_minutes": 187,
+        "author": "Systems Design Channel",
+        "rating": 4.5,
+        "review_count": 2841
+      }
+    },
+    {
+      "position": 7,
+      "title": "Amazon DynamoDB: How It Works Under the Hood",
+      "url": "https://aws.amazon.com/blogs/database/dynamodb-under-the-hood",
+      "display_url": "aws.amazon.com \u203a blogs \u203a database",
+      "description": "AWS engineers explain the internal architecture of DynamoDB including consistent hashing for partition management, Paxos-based replication for strong consistency, and the storage node architecture. Includes the original Dynamo paper concepts.",
+      "date_published": "2024-12-15",
+      "cached_url": "https://cache.searchengine.com/cache?q=pqr678",
+      "source_type": "blog",
+      "rich_snippet": {
+        "type": "article",
+        "reading_time_minutes": 35,
+        "author": "AWS Database Team",
+        "rating": 4.4,
+        "review_count": 567
+      }
+    },
+    {
+      "position": 8,
+      "title": "Jepsen: Testing Distributed Databases for Correctness",
+      "url": "https://jepsen.io/analyses",
+      "display_url": "jepsen.io \u203a analyses",
+      "description": "Kyle Kingsbury's comprehensive testing framework and analysis reports for distributed databases. Covers linearizability testing, network partition simulation, and correctness verification for systems including CockroachDB, YugabyteDB, TiDB, and FoundationDB.",
+      "date_published": "2025-03-22",
+      "cached_url": "https://cache.searchengine.com/cache?q=stu901",
+      "source_type": "research",
+      "rich_snippet": {
+        "type": "tool",
+        "reading_time_minutes": 40,
+        "author": "Kyle Kingsbury",
+        "rating": 4.9,
+        "review_count": 723
+      }
+    },
+    {
+      "position": 9,
+      "title": "Google Spanner: Globally-Distributed Database - Research Paper",
+      "url": "https://research.google/pubs/spanner-googles-globally-distributed-database/",
+      "display_url": "research.google \u203a pubs",
+      "description": "The original Google Spanner paper describing how Google built a globally-distributed, synchronously-replicated database. Key innovations include TrueTime API using atomic clocks and GPS receivers to provide globally consistent timestamps.",
+      "date_published": "2012-10-01",
+      "cached_url": "https://cache.searchengine.com/cache?q=vwx234",
+      "source_type": "academic",
+      "rich_snippet": {
+        "type": "research_paper",
+        "reading_time_minutes": 55,
+        "author": "James C. Corbett et al.",
+        "rating": 4.8,
+        "review_count": 4210
+      }
+    },
+    {
+      "position": 10,
+      "title": "FoundationDB: A Practical Guide to Building on a Distributed Database",
+      "url": "https://apple.github.io/foundationdb/building-guide.html",
+      "display_url": "apple.github.io \u203a foundationdb",
+      "description": "Apple's guide to building applications on FoundationDB, covering the layer concept, ordered key-value store semantics, multi-key ACID transactions, and how to design custom data models on top of FoundationDB's minimal but powerful primitives.",
+      "date_published": "2025-01-05",
+      "cached_url": "https://cache.searchengine.com/cache?q=yz0567",
+      "source_type": "documentation",
+      "rich_snippet": {
+        "type": "technical_doc",
+        "reading_time_minutes": 50,
+        "author": "FoundationDB Team",
+        "rating": 4.6,
+        "review_count": 198
+      }
+    }
+  ],
+  "related_searches": [
+    "distributed database tutorial for beginners",
+    "raft consensus algorithm explained",
+    "cap theorem distributed systems",
+    "cockroachdb vs tidb vs yugabytedb comparison",
+    "how does google spanner work",
+    "distributed database sharding strategies",
+    "eventual consistency vs strong consistency",
+    "two phase commit protocol explained"
+  ],
+  "knowledge_panel": {
+    "title": "Distributed Database",
+    "description": "A distributed database is a database in which data is stored across multiple physical locations. It may be spread across multiple computers located in the same physical location or dispersed over a network of interconnected computers. Unlike parallel systems, distributed databases typically operate over a wide area network and allow geographic distribution of data.",
+    "source": "Wikipedia",
+    "source_url": "https://en.wikipedia.org/wiki/Distributed_database",
+    "key_facts": [
+      {"label": "Also known as", "value": "DDB, distributed DBMS"},
+      {"label": "Key properties", "value": "Partition tolerance, replication, consistency"},
+      {"label": "Common protocols", "value": "Paxos, Raft, Two-Phase Commit, PBFT"},
+      {"label": "Notable examples", "value": "Google Spanner, CockroachDB, TiDB, YugabyteDB, FoundationDB"}
+    ],
+    "related_topics": [
+      {"name": "CAP Theorem", "url": "https://en.wikipedia.org/wiki/CAP_theorem"},
+      {"name": "Consensus Algorithm", "url": "https://en.wikipedia.org/wiki/Consensus_(computer_science)"},
+      {"name": "Database Sharding", "url": "https://en.wikipedia.org/wiki/Shard_(database_architecture)"},
+      {"name": "Replication", "url": "https://en.wikipedia.org/wiki/Replication_(computing)"}
+    ]
+  }
+}

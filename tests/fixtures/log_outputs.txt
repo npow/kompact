@@ -1,0 +1,71 @@
+2025-04-11 06:00:01.123 INFO  [main] server.Bootstrap - Starting application server v3.12.4
+2025-04-11 06:00:01.124 INFO  [main] server.Bootstrap - Loading configuration from /etc/app/config.yaml
+2025-04-11 06:00:01.189 INFO  [main] server.Bootstrap - Environment: production
+2025-04-11 06:00:01.190 INFO  [main] server.Bootstrap - Region: us-east-1
+2025-04-11 06:00:01.450 INFO  [main] db.ConnectionPool - Initializing connection pool: min=5, max=50, timeout=30000ms
+2025-04-11 06:00:01.892 INFO  [main] db.ConnectionPool - Connection pool initialized successfully
+2025-04-11 06:00:02.001 INFO  [main] cache.RedisClient - Connecting to Redis cluster at redis-primary.internal:6379
+2025-04-11 06:00:02.034 INFO  [main] cache.RedisClient - Redis connection established (latency: 33ms)
+2025-04-11 06:00:02.100 INFO  [main] queue.KafkaConsumer - Subscribing to topics: [events.user, events.order, events.notification]
+2025-04-11 06:00:02.250 INFO  [main] queue.KafkaConsumer - Consumer group 'app-server-group' joined successfully
+2025-04-11 06:00:02.500 INFO  [main] server.Bootstrap - Application server started on port 8443 (HTTPS)
+2025-04-11 06:00:02.501 INFO  [main] server.Bootstrap - Health check endpoint available at /health
+2025-04-11 06:00:02.502 INFO  [main] server.Bootstrap - Metrics endpoint available at /metrics
+2025-04-11 06:00:02.503 INFO  [main] server.Bootstrap - Ready to accept connections
+2025-04-11 06:00:05.100 INFO  [http-thread-1] http.AccessLog - GET /health 200 2ms - agent=kube-probe/1.28
+2025-04-11 06:00:10.100 INFO  [http-thread-1] http.AccessLog - GET /health 200 1ms - agent=kube-probe/1.28
+2025-04-11 06:00:15.101 INFO  [http-thread-1] http.AccessLog - GET /health 200 1ms - agent=kube-probe/1.28
+2025-04-11 06:00:15.200 INFO  [http-thread-2] http.AccessLog - GET /api/v2/users?page=1&limit=20 200 45ms - agent=Mozilla/5.0
+2025-04-11 06:00:15.300 INFO  [http-thread-3] http.AccessLog - POST /api/v2/auth/login 200 112ms - agent=Mozilla/5.0
+2025-04-11 06:00:15.412 INFO  [http-thread-3] auth.SessionManager - Session created for user_id=usr_001 session_id=sess_abc123 ttl=3600s
+2025-04-11 06:00:16.001 INFO  [http-thread-4] http.AccessLog - GET /api/v2/search?q=consensus+algorithms&page=1 200 234ms - agent=Mozilla/5.0
+2025-04-11 06:00:16.050 INFO  [http-thread-5] http.AccessLog - GET /api/v2/users/usr_003/profile 200 18ms - agent=Mozilla/5.0
+2025-04-11 06:00:16.100 WARN  [http-thread-6] http.RateLimiter - Rate limit threshold reached for client_ip=203.0.113.42 (950/1000 requests in current window)
+2025-04-11 06:00:16.200 INFO  [http-thread-6] http.AccessLog - GET /api/v2/search?q=paxos 200 189ms - agent=python-requests/2.31.0
+2025-04-11 06:00:16.500 INFO  [http-thread-7] http.AccessLog - PUT /api/v2/users/usr_002/settings 200 67ms - agent=Mozilla/5.0
+2025-04-11 06:00:17.001 ERROR [http-thread-8] http.AccessLog - GET /api/v2/users/usr_999 404 5ms - agent=Mozilla/5.0
+2025-04-11 06:00:17.002 WARN  [http-thread-8] api.UserController - User not found: usr_999 (request_id=req_d7e8f9)
+2025-04-11 06:00:17.500 INFO  [http-thread-9] http.AccessLog - POST /api/v2/documents 201 892ms - agent=Mozilla/5.0
+2025-04-11 06:00:17.501 INFO  [http-thread-9] storage.S3Client - Uploaded document doc_x1y2z3 to s3://app-documents/2025/04/11/doc_x1y2z3.pdf (2.4MB)
+2025-04-11 06:00:18.000 INFO  [kafka-consumer-1] events.UserEventHandler - Processing event: user.profile_updated user_id=usr_005
+2025-04-11 06:00:18.050 INFO  [kafka-consumer-1] events.UserEventHandler - Event processed successfully in 50ms
+2025-04-11 06:00:20.100 INFO  [http-thread-1] http.AccessLog - GET /health 200 1ms - agent=kube-probe/1.28
+2025-04-11 06:00:22.300 ERROR [http-thread-10] db.ConnectionPool - Failed to acquire connection: pool exhausted (active=50, waiting=12)
+2025-04-11 06:00:22.301 ERROR [http-thread-10] http.AccessLog - GET /api/v2/reports/quarterly 503 30002ms - agent=Mozilla/5.0
+2025-04-11 06:00:22.302 ERROR [http-thread-10] api.ReportController - Service unavailable: database connection timeout after 30000ms (request_id=req_m6n7o8)
+2025-04-11 06:00:22.350 WARN  [monitor-thread] db.ConnectionPool - Connection pool utilization critical: 50/50 (100%) - consider increasing max pool size
+2025-04-11 06:00:22.400 INFO  [monitor-thread] metrics.Collector - Pool stats: active=50 idle=0 waiting=12 timeout_count=1 avg_wait_ms=4521
+2025-04-11 06:00:23.000 INFO  [http-thread-11] http.AccessLog - POST /api/v2/auth/login 200 98ms - agent=Mozilla/5.0
+2025-04-11 06:00:23.098 INFO  [http-thread-11] auth.SessionManager - Session created for user_id=usr_004 session_id=sess_def456 ttl=3600s
+2025-04-11 06:00:23.500 WARN  [http-thread-12] auth.TokenValidator - Token validation failed: token expired at 2025-04-01T00:00:00Z (client_ip=198.51.100.17)
+2025-04-11 06:00:23.501 INFO  [http-thread-12] http.AccessLog - GET /api/v2/users/me 401 3ms - agent=curl/8.4.0
+2025-04-11 06:00:24.000 INFO  [kafka-consumer-2] events.OrderEventHandler - Processing event: order.created order_id=ord_p1q2r3 user_id=usr_001
+2025-04-11 06:00:24.200 INFO  [kafka-consumer-2] events.OrderEventHandler - Order validation passed: ord_p1q2r3
+2025-04-11 06:00:24.400 INFO  [kafka-consumer-2] events.OrderEventHandler - Payment initiated for order ord_p1q2r3 amount=$149.99
+2025-04-11 06:00:24.800 INFO  [kafka-consumer-2] events.OrderEventHandler - Event processed successfully in 800ms
+2025-04-11 06:00:25.100 INFO  [http-thread-1] http.AccessLog - GET /health 200 1ms - agent=kube-probe/1.28
+2025-04-11 06:00:25.200 INFO  [http-thread-13] http.AccessLog - GET /api/v2/search?q=byzantine+fault+tolerance 200 312ms - agent=Mozilla/5.0
+2025-04-11 06:00:25.300 INFO  [http-thread-14] http.AccessLog - DELETE /api/v2/sessions/sess_old789 204 12ms - agent=Mozilla/5.0
+2025-04-11 06:00:25.301 INFO  [http-thread-14] auth.SessionManager - Session invalidated: sess_old789
+2025-04-11 06:00:26.000 ERROR [kafka-consumer-3] events.NotificationHandler - Failed to send email notification: SMTP connection refused (host=smtp.internal:587)
+2025-04-11 06:00:26.001 WARN  [kafka-consumer-3] events.NotificationHandler - Retrying notification delivery (attempt 1/3) for event_id=evt_s4t5u6
+2025-04-11 06:00:27.000 WARN  [kafka-consumer-3] events.NotificationHandler - Retrying notification delivery (attempt 2/3) for event_id=evt_s4t5u6
+2025-04-11 06:00:28.000 WARN  [kafka-consumer-3] events.NotificationHandler - Retrying notification delivery (attempt 3/3) for event_id=evt_s4t5u6
+2025-04-11 06:00:29.000 ERROR [kafka-consumer-3] events.NotificationHandler - Notification delivery failed permanently after 3 attempts for event_id=evt_s4t5u6
+2025-04-11 06:00:29.001 ERROR [kafka-consumer-3] events.NotificationHandler - Moving event evt_s4t5u6 to dead letter queue: dlq.notifications
+2025-04-11 06:00:30.100 INFO  [http-thread-1] http.AccessLog - GET /health 200 1ms - agent=kube-probe/1.28
+2025-04-11 06:00:30.200 INFO  [http-thread-15] http.AccessLog - PATCH /api/v2/users/usr_001/preferences 200 34ms - agent=Mozilla/5.0
+2025-04-11 06:00:30.500 INFO  [scheduler-thread] jobs.CleanupJob - Starting expired session cleanup
+2025-04-11 06:00:30.900 INFO  [scheduler-thread] jobs.CleanupJob - Cleaned up 47 expired sessions (older than 2025-04-10T06:00:00Z)
+2025-04-11 06:00:31.000 INFO  [monitor-thread] db.ConnectionPool - Pool recovery: active=38 idle=12 waiting=0 - utilization normalized
+2025-04-11 06:00:31.100 INFO  [http-thread-16] http.AccessLog - GET /api/v2/documents?user_id=usr_003&type=pdf 200 78ms - agent=Mozilla/5.0
+2025-04-11 06:00:31.200 INFO  [http-thread-17] http.AccessLog - POST /api/v2/webhooks 201 23ms - agent=python-requests/2.31.0
+2025-04-11 06:00:31.201 INFO  [http-thread-17] api.WebhookController - Webhook registered: whk_v7w8x9 url=https://client.example.com/hooks events=[order.created, order.completed]
+2025-04-11 06:00:32.000 INFO  [kafka-consumer-1] events.UserEventHandler - Processing event: user.login user_id=usr_002
+2025-04-11 06:00:32.020 INFO  [kafka-consumer-1] events.UserEventHandler - Event processed successfully in 20ms
+2025-04-11 06:00:33.000 INFO  [http-thread-18] http.AccessLog - GET /api/v2/users?role=admin&status=active 200 52ms - agent=Mozilla/5.0
+2025-04-11 06:00:33.500 WARN  [http-thread-19] http.RequestValidator - Request body exceeds recommended size: 4.8MB (limit: 5MB) for POST /api/v2/documents/bulk
+2025-04-11 06:00:33.600 INFO  [http-thread-19] http.AccessLog - POST /api/v2/documents/bulk 200 2341ms - agent=python-requests/2.31.0
+2025-04-11 06:00:35.100 INFO  [http-thread-1] http.AccessLog - GET /health 200 1ms - agent=kube-probe/1.28
+2025-04-11 06:00:35.200 INFO  [http-thread-20] http.AccessLog - GET /metrics 200 8ms - agent=Prometheus/2.48.0
+2025-04-11 06:00:35.201 INFO  [monitor-thread] metrics.Collector - Exported 342 metric series in 7ms
