@@ -1,0 +1,247 @@
+{
+  "search_results": {
+    "query": "distributed systems consensus algorithms",
+    "total_results": 2847,
+    "page": 1,
+    "per_page": 10,
+    "results": [
+      {
+        "id": "res_a1b2c3d4",
+        "title": "Raft: A Consensus Algorithm for Replicated State Machines",
+        "author": {
+          "name": "Diego Ongaro",
+          "affiliation": "Stanford University",
+          "email": "ongaro@cs.stanford.edu"
+        },
+        "score": 0.9812,
+        "published_at": "2014-05-19T00:00:00Z",
+        "updated_at": "2014-05-19T00:00:00Z",
+        "tags": ["consensus", "raft", "distributed-systems", "replication"],
+        "metrics": {
+          "citations": 4231,
+          "downloads": 189420,
+          "views": 542871
+        }
+      },
+      {
+        "id": "res_e5f6g7h8",
+        "title": "Paxos Made Simple",
+        "author": {
+          "name": "Leslie Lamport",
+          "affiliation": "Microsoft Research",
+          "email": "lamport@microsoft.com"
+        },
+        "score": 0.9754,
+        "published_at": "2001-11-01T00:00:00Z",
+        "updated_at": "2001-11-01T00:00:00Z",
+        "tags": ["consensus", "paxos", "distributed-systems", "fault-tolerance"],
+        "metrics": {
+          "citations": 8912,
+          "downloads": 312450,
+          "views": 891234
+        }
+      },
+      {
+        "id": "res_i9j0k1l2",
+        "title": "The Byzantine Generals Problem",
+        "author": {
+          "name": "Leslie Lamport",
+          "affiliation": "SRI International",
+          "email": "lamport@sri.com"
+        },
+        "score": 0.9621,
+        "published_at": "1982-07-01T00:00:00Z",
+        "updated_at": "1982-07-01T00:00:00Z",
+        "tags": ["byzantine", "fault-tolerance", "distributed-systems", "consensus"],
+        "metrics": {
+          "citations": 12043,
+          "downloads": 287610,
+          "views": 723891
+        }
+      }
+    ]
+  },
+  "user_listings": {
+    "total_users": 156,
+    "page": 1,
+    "per_page": 5,
+    "users": [
+      {
+        "id": "usr_001",
+        "username": "aturing",
+        "display_name": "Alan Turing",
+        "email": "turing@bletchley.gov.uk",
+        "role": "admin",
+        "status": "active",
+        "created_at": "2023-01-15T09:30:00Z",
+        "last_login": "2025-04-10T14:22:31Z",
+        "profile": {
+          "bio": "Computer scientist and mathematician. Working on computability theory.",
+          "location": "Manchester, UK",
+          "website": "https://aturing.dev",
+          "avatar_url": "https://cdn.example.com/avatars/usr_001.png"
+        },
+        "permissions": ["read", "write", "admin", "deploy"],
+        "teams": ["core-platform", "research"]
+      },
+      {
+        "id": "usr_002",
+        "username": "ghopper",
+        "display_name": "Grace Hopper",
+        "email": "hopper@navy.mil",
+        "role": "admin",
+        "status": "active",
+        "created_at": "2023-01-16T10:15:00Z",
+        "last_login": "2025-04-11T08:45:12Z",
+        "profile": {
+          "bio": "Rear Admiral, pioneer in computer programming. Inventor of COBOL.",
+          "location": "Arlington, VA",
+          "website": "https://gracehopper.org",
+          "avatar_url": "https://cdn.example.com/avatars/usr_002.png"
+        },
+        "permissions": ["read", "write", "admin", "deploy"],
+        "teams": ["compiler-team", "standards"]
+      },
+      {
+        "id": "usr_003",
+        "username": "djikstra",
+        "display_name": "Edsger Dijkstra",
+        "email": "dijkstra@utexas.edu",
+        "role": "maintainer",
+        "status": "active",
+        "created_at": "2023-02-01T11:00:00Z",
+        "last_login": "2025-04-09T16:33:45Z",
+        "profile": {
+          "bio": "Structured programming advocate. Working on shortest path algorithms.",
+          "location": "Austin, TX",
+          "website": "https://cs.utexas.edu/~dijkstra",
+          "avatar_url": "https://cdn.example.com/avatars/usr_003.png"
+        },
+        "permissions": ["read", "write", "deploy"],
+        "teams": ["algorithms", "core-platform"]
+      },
+      {
+        "id": "usr_004",
+        "username": "dknuth",
+        "display_name": "Donald Knuth",
+        "email": "knuth@stanford.edu",
+        "role": "maintainer",
+        "status": "active",
+        "created_at": "2023-02-10T08:00:00Z",
+        "last_login": "2025-04-08T12:10:05Z",
+        "profile": {
+          "bio": "Author of The Art of Computer Programming. TeX creator.",
+          "location": "Stanford, CA",
+          "website": "https://cs.stanford.edu/~knuth",
+          "avatar_url": "https://cdn.example.com/avatars/usr_004.png"
+        },
+        "permissions": ["read", "write", "deploy"],
+        "teams": ["algorithms", "documentation"]
+      },
+      {
+        "id": "usr_005",
+        "username": "bstroustrup",
+        "display_name": "Bjarne Stroustrup",
+        "email": "bs@cppstandard.org",
+        "role": "contributor",
+        "status": "active",
+        "created_at": "2023-03-05T14:20:00Z",
+        "last_login": "2025-04-11T09:55:30Z",
+        "profile": {
+          "bio": "Designer and original implementor of C++.",
+          "location": "New York, NY",
+          "website": "https://stroustrup.com",
+          "avatar_url": "https://cdn.example.com/avatars/usr_005.png"
+        },
+        "permissions": ["read", "write"],
+        "teams": ["compiler-team", "language-design"]
+      }
+    ]
+  },
+  "error_responses": [
+    {
+      "status": 400,
+      "error": "BAD_REQUEST",
+      "message": "Invalid query parameter: 'sort_by' must be one of ['relevance', 'date', 'citations']",
+      "request_id": "req_x1y2z3",
+      "timestamp": "2025-04-11T10:00:01Z",
+      "details": {
+        "field": "sort_by",
+        "provided_value": "popularity",
+        "allowed_values": ["relevance", "date", "citations"]
+      }
+    },
+    {
+      "status": 401,
+      "error": "UNAUTHORIZED",
+      "message": "API key expired. Please regenerate your API key at https://api.example.com/keys",
+      "request_id": "req_a4b5c6",
+      "timestamp": "2025-04-11T10:00:15Z",
+      "details": {
+        "key_prefix": "sk_live_4eC39H",
+        "expired_at": "2025-04-01T00:00:00Z"
+      }
+    },
+    {
+      "status": 404,
+      "error": "NOT_FOUND",
+      "message": "Resource 'usr_999' does not exist",
+      "request_id": "req_d7e8f9",
+      "timestamp": "2025-04-11T10:00:22Z",
+      "details": {
+        "resource_type": "user",
+        "resource_id": "usr_999"
+      }
+    },
+    {
+      "status": 429,
+      "error": "RATE_LIMITED",
+      "message": "Rate limit exceeded. Maximum 1000 requests per minute.",
+      "request_id": "req_g0h1i2",
+      "timestamp": "2025-04-11T10:00:30Z",
+      "details": {
+        "limit": 1000,
+        "window_seconds": 60,
+        "current_usage": 1023,
+        "retry_after_seconds": 37
+      }
+    },
+    {
+      "status": 500,
+      "error": "INTERNAL_SERVER_ERROR",
+      "message": "An unexpected error occurred. Our team has been notified.",
+      "request_id": "req_j3k4l5",
+      "timestamp": "2025-04-11T10:00:45Z",
+      "details": {
+        "trace_id": "trace_m6n7o8p9",
+        "incident_url": "https://status.example.com/incidents/inc_q0r1s2"
+      }
+    }
+  ],
+  "paginated_response": {
+    "data": [
+      {"id": 1, "name": "item_alpha", "value": 42.5},
+      {"id": 2, "name": "item_beta", "value": 17.3},
+      {"id": 3, "name": "item_gamma", "value": 91.8},
+      {"id": 4, "name": "item_delta", "value": 63.1},
+      {"id": 5, "name": "item_epsilon", "value": 28.7}
+    ],
+    "pagination": {
+      "current_page": 1,
+      "total_pages": 32,
+      "total_items": 156,
+      "items_per_page": 5,
+      "has_next": true,
+      "has_previous": false,
+      "next_cursor": "eyJpZCI6NSwic29ydCI6ImNyZWF0ZWRfYXQifQ==",
+      "previous_cursor": null
+    },
+    "meta": {
+      "request_id": "req_t3u4v5",
+      "response_time_ms": 47,
+      "cache_hit": false,
+      "api_version": "2025-03-01",
+      "deprecation_notice": null
+    }
+  }
+}
