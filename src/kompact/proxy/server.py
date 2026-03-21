@@ -12,6 +12,7 @@ Routes:
 
 from __future__ import annotations
 
+import copy
 import json
 import logging
 import time
@@ -104,6 +105,15 @@ async def _proxy_request(
 ) -> Response:
     """Process and forward a request to the upstream provider."""
     start = time.monotonic()
+
+    # Per-request transform overrides via X-Kompact-Disable header
+    disable_header = request.headers.get("x-kompact-disable", "")
+    if disable_header:
+        config = copy.deepcopy(config)
+        for name in (n.strip() for n in disable_header.split(",")):
+            transform_config = getattr(config, name, None)
+            if transform_config and hasattr(transform_config, "enabled"):
+                transform_config.enabled = False
 
     # Parse request
     parsed = parse_request(body, provider)
