@@ -54,9 +54,17 @@ def init(service_name: str = "kompact", prometheus_port: int = 9464) -> None:
     # Traces — OTLP export (to Jaeger/Tempo/etc if available)
     tracer_provider = TracerProvider(resource=resource)
     try:
+        import socket
+
+        otel_host = "localhost"
+        otel_port = 4317
+        # Quick check if the OTLP endpoint is reachable before registering
+        sock = socket.create_connection((otel_host, otel_port), timeout=0.5)
+        sock.close()
         tracer_provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter()))
-    except Exception:
-        logger.debug("OTLP trace exporter unavailable, traces disabled")
+        logger.info("OTLP trace exporter connected to %s:%d", otel_host, otel_port)
+    except (OSError, Exception):
+        logger.debug("OTLP endpoint not reachable, trace export disabled")
     trace.set_tracer_provider(tracer_provider)
     _tracer = trace.get_tracer("kompact")
 
