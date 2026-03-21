@@ -78,7 +78,7 @@ def _transform_text(text: str, config: ToonConfig) -> tuple[str, int]:
                 saved = _estimate_token_diff(text, result)
                 return result, saved
         # Any dict: try JSON minification
-        if isinstance(data, (dict, list)):
+        if isinstance(data, dict | list):
             minified = json.dumps(data, separators=(",", ":"))
             if len(minified) < len(text) * 0.85:
                 saved = _estimate_token_diff(text, minified)
@@ -351,7 +351,7 @@ def _format_value(val: Any) -> str:
         return ""
     if isinstance(val, bool):
         return str(val).lower()
-    if isinstance(val, (int, float)):
+    if isinstance(val, int | float):
         return str(val)
     if isinstance(val, str):
         return val
@@ -397,7 +397,7 @@ def _try_compact_params(obj: dict[str, Any]) -> str | None:
     for k, v in obj.items():
         if k == "properties":
             continue
-        if isinstance(v, (list, dict)):
+        if isinstance(v, list | dict):
             parts.append(f"{k}={json.dumps(v, separators=(',', ':'))}")
         else:
             parts.append(f"{k}={v}")
@@ -410,7 +410,7 @@ def _try_compact_params(obj: dict[str, Any]) -> str | None:
         vals = []
         for f in prop_fields:
             v = spec.get(f, "")
-            if isinstance(v, (list, dict)):
+            if isinstance(v, list | dict):
                 vals.append(json.dumps(v, separators=(",", ":")))
             elif v is None:
                 vals.append("")

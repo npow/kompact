@@ -174,7 +174,7 @@ def _fmt(val: Any) -> str:
         return ""
     if isinstance(val, bool):
         return str(val).lower()
-    if isinstance(val, (int, float)):
+    if isinstance(val, int | float):
         return str(val)
     if isinstance(val, str):
         return val

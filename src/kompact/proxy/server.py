@@ -24,8 +24,8 @@ from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 
 from kompact.cache.store import CompressionStore
 from kompact.config import KompactConfig
-from kompact.metrics.tracker import MetricsTracker
 from kompact.metrics.telemetry import get_tracer, record_request, record_transform
+from kompact.metrics.tracker import MetricsTracker
 from kompact.parser.messages import parse_request, serialize_request
 from kompact.transforms.pipeline import run as run_pipeline
 from kompact.types import Provider
@@ -157,8 +157,6 @@ async def _proxy_request(
         return optimized_body, metrics, tokens_before, pipeline_latency_ms
 
     if tracer is not None:
-        from opentelemetry import trace
-
         with tracer.start_as_current_span(
             "kompact.proxy",
             attributes={"kompact.provider": provider.value, "kompact.model": model},
@@ -167,11 +165,6 @@ async def _proxy_request(
             response = await _forward_upstream(
                 request, upstream_url, optimized_body, body, metrics
             )
-            upstream_latency_ms = (
-                (time.monotonic() * 1000)
-                - (pipeline_latency_ms + metrics.timestamp * 1000)
-            ) if hasattr(metrics, "timestamp") else None
-
             record_request(
                 provider=provider.value,
                 model=model,
