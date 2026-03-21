@@ -210,6 +210,13 @@ async def _forward_upstream(
 
     is_streaming = original_body.get("stream", False)
 
+    # Headers that must not be forwarded from upstream — httpx already
+    # handles content-encoding (decompresses gzip/deflate), so passing
+    # these through would cause clients to try to decompress plain text.
+    _hop_headers = frozenset({
+        "content-encoding", "transfer-encoding", "content-length", "connection",
+    })
+
     async with httpx.AsyncClient(timeout=300.0) as client:
         if is_streaming:
             upstream_resp = await client.send(
@@ -223,11 +230,14 @@ async def _forward_upstream(
             )
 
             async def stream_response():
-                async for chunk in upstream_resp.aiter_bytes():
+                async for chunk in upstream_resp.aiter_raw():
                     yield chunk
                 await upstream_resp.aclose()
 
-            response_headers = dict(upstream_resp.headers)
+            response_headers = {
+                k: v for k, v in upstream_resp.headers.items()
+                if k.lower() not in _hop_headers
+            }
             response_headers["x-kompact-tokens-saved"] = str(metrics.tokens_saved)
             response_headers["x-kompact-compression-ratio"] = f"{metrics.compression_ratio:.3f}"
             response_headers["x-kompact-latency-ms"] = f"{metrics.latency_ms:.1f}"
@@ -245,7 +255,10 @@ async def _forward_upstream(
                 headers=forward_headers,
             )
 
-            response_headers = dict(upstream_resp.headers)
+            response_headers = {
+                k: v for k, v in upstream_resp.headers.items()
+                if k.lower() not in _hop_headers
+            }
             response_headers["x-kompact-tokens-saved"] = str(metrics.tokens_saved)
             response_headers["x-kompact-compression-ratio"] = f"{metrics.compression_ratio:.3f}"
             response_headers["x-kompact-latency-ms"] = f"{metrics.latency_ms:.1f}"
