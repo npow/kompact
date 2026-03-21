@@ -25,6 +25,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 from kompact.cache.store import CompressionStore
 from kompact.config import KompactConfig
 from kompact.metrics.tracker import MetricsTracker
+from kompact.metrics.telemetry import get_tracer, record_request, record_transform
 from kompact.parser.messages import parse_request, serialize_request
 from kompact.transforms.pipeline import run as run_pipeline
 from kompact.types import Provider
@@ -104,42 +105,106 @@ async def _proxy_request(
     tracker: MetricsTracker,
 ) -> Response:
     """Process and forward a request to the upstream provider."""
-    start = time.monotonic()
+    tracer = get_tracer()
+    model = body.get("model", "unknown")
 
-    # Per-request transform overrides via X-Kompact-Disable header
-    disable_header = request.headers.get("x-kompact-disable", "")
-    if disable_header:
-        config = copy.deepcopy(config)
-        for name in (n.strip() for n in disable_header.split(",")):
-            transform_config = getattr(config, name, None)
-            if transform_config and hasattr(transform_config, "enabled"):
-                transform_config.enabled = False
+    def _run(span=None):
+        """Run pipeline, optionally recording transform spans."""
+        nonlocal config
+        start = time.monotonic()
 
-    # Parse request
-    parsed = parse_request(body, provider)
+        # Per-request transform overrides via X-Kompact-Disable header
+        disable_header = request.headers.get("x-kompact-disable", "")
+        if disable_header:
+            config = copy.deepcopy(config)
+            for name in (n.strip() for n in disable_header.split(",")):
+                transform_config = getattr(config, name, None)
+                if transform_config and hasattr(transform_config, "enabled"):
+                    transform_config.enabled = False
 
-    # Estimate input tokens
-    tokens_before = _estimate_tokens(body)
+        parsed = parse_request(body, provider)
+        tokens_before = _estimate_tokens(body)
+        pipeline_result = run_pipeline(parsed, config)
+        optimized_body = serialize_request(pipeline_result.request)
 
-    # Run transform pipeline
-    pipeline_result = run_pipeline(parsed, config)
+        pipeline_latency_ms = (time.monotonic() - start) * 1000
+        metrics = tracker.record(pipeline_result, tokens_before, pipeline_latency_ms)
 
-    # Serialize back
-    optimized_body = serialize_request(pipeline_result.request)
+        # Record per-transform telemetry
+        for tr in pipeline_result.transform_results:
+            record_transform(
+                name=tr.transform_name,
+                tokens_saved=tr.tokens_saved,
+                latency_ms=tr.details.get("latency_ms", 0),
+            )
 
-    # Record metrics
-    latency_ms = (time.monotonic() - start) * 1000
-    metrics = tracker.record(pipeline_result, tokens_before, latency_ms)
+        if span is not None:
+            span.set_attribute("kompact.provider", provider.value)
+            span.set_attribute("kompact.model", model)
+            span.set_attribute("kompact.tokens_before", tokens_before)
+            span.set_attribute("kompact.tokens_saved", metrics.tokens_saved)
+            span.set_attribute("kompact.compression_ratio", metrics.compression_ratio)
+            span.set_attribute("kompact.pipeline_latency_ms", pipeline_latency_ms)
 
-    if config.verbose:
-        logger.info(
-            "Kompact: %d tokens saved (%.1f%% reduction) in %.1fms",
-            metrics.tokens_saved,
-            (1 - metrics.compression_ratio) * 100,
-            metrics.latency_ms,
+        if config.verbose:
+            logger.info(
+                "Kompact: %d tokens saved (%.1f%% reduction) in %.1fms",
+                metrics.tokens_saved,
+                (1 - metrics.compression_ratio) * 100,
+                metrics.latency_ms,
+            )
+
+        return optimized_body, metrics, tokens_before, pipeline_latency_ms
+
+    if tracer is not None:
+        from opentelemetry import trace
+
+        with tracer.start_as_current_span(
+            "kompact.proxy",
+            attributes={"kompact.provider": provider.value, "kompact.model": model},
+        ) as span:
+            optimized_body, metrics, tokens_before, pipeline_latency_ms = _run(span)
+            response = await _forward_upstream(
+                request, upstream_url, optimized_body, body, metrics
+            )
+            upstream_latency_ms = (
+                (time.monotonic() * 1000)
+                - (pipeline_latency_ms + metrics.timestamp * 1000)
+            ) if hasattr(metrics, "timestamp") else None
+
+            record_request(
+                provider=provider.value,
+                model=model,
+                tokens_before=tokens_before,
+                tokens_saved=metrics.tokens_saved,
+                compression_ratio=metrics.compression_ratio,
+                pipeline_latency_ms=pipeline_latency_ms,
+            )
+            return response
+    else:
+        optimized_body, metrics, tokens_before, pipeline_latency_ms = _run()
+        response = await _forward_upstream(
+            request, upstream_url, optimized_body, body, metrics
         )
+        record_request(
+            provider=provider.value,
+            model=model,
+            tokens_before=tokens_before,
+            tokens_saved=metrics.tokens_saved,
+            compression_ratio=metrics.compression_ratio,
+            pipeline_latency_ms=pipeline_latency_ms,
+        )
+        return response
 
-    # Forward headers (pass through auth, content type, etc.)
+
+async def _forward_upstream(
+    request: Request,
+    upstream_url: str,
+    optimized_body: dict[str, Any],
+    original_body: dict[str, Any],
+    metrics: Any,
+) -> Response:
+    """Forward the optimized request to the upstream provider."""
     forward_headers = {}
     for key in ("authorization", "x-api-key", "anthropic-version",
                 "anthropic-beta", "content-type"):
@@ -150,11 +215,10 @@ async def _proxy_request(
     if "content-type" not in forward_headers:
         forward_headers["content-type"] = "application/json"
 
-    is_streaming = body.get("stream", False)
+    is_streaming = original_body.get("stream", False)
 
     async with httpx.AsyncClient(timeout=300.0) as client:
         if is_streaming:
-            # Stream response back
             upstream_resp = await client.send(
                 client.build_request(
                     "POST",
@@ -182,7 +246,6 @@ async def _proxy_request(
                 media_type=upstream_resp.headers.get("content-type", "text/event-stream"),
             )
         else:
-            # Non-streaming
             upstream_resp = await client.post(
                 upstream_url,
                 json=optimized_body,

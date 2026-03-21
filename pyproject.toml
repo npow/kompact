@@ -1,6 +1,6 @@
 [project]
 name = "kompact"
-version = "0.2.0"
+version = "0.3.0"
 description = "Multi-layer context optimization proxy for LLM agents"
 readme = "README.md"
 license = "MIT"
@@ -22,6 +22,11 @@ dependencies = [
     "httpx>=0.28.0",
     "tiktoken>=0.8.0",
     "click>=8.1.0",
+    "opentelemetry-api>=1.20.0",
+    "opentelemetry-sdk>=1.20.0",
+    "opentelemetry-exporter-otlp-proto-grpc>=1.20.0",
+    "opentelemetry-exporter-prometheus>=0.40b0",
+    "prometheus-client>=0.20.0",
 ]
 
 [project.optional-dependencies]

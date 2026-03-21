@@ -91,6 +91,21 @@ client.chat.completions.create(..., extra_headers={"X-Kompact-Disable": "toon,co
 
 Comma-separated transform names: `toon`, `json_crusher`, `code_compressor`, `log_compressor`, `content_compressor`, `observation_masker`, `cache_aligner`, `schema_optimizer`.
 
+## Monitoring
+
+Kompact exports OpenTelemetry metrics (on by default, disable with `--no-otel`). A Prometheus + Grafana stack is included:
+
+```bash
+cd monitoring
+docker compose up -d
+```
+
+- **Grafana dashboard**: http://localhost:9473 (pre-built "Kompact" dashboard)
+- **Prometheus**: http://localhost:9090
+- **Metrics endpoint**: http://localhost:9464/metrics
+
+The dashboard shows request rate, token savings, compression ratio, pipeline latency percentiles, and per-transform breakdowns.
+
 ## Running benchmarks
 
 ```bash
