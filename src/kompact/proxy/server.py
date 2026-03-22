@@ -55,7 +55,7 @@ def create_app(config: KompactConfig | None = None) -> FastAPI:
     async def anthropic_messages(request: Request) -> Response:
         """Handle Anthropic Messages API requests."""
         body = await request.json()
-        return await _proxy_request(
+        response = await _proxy_request(
             request=request,
             body=body,
             provider=Provider.ANTHROPIC,
@@ -63,6 +63,22 @@ def create_app(config: KompactConfig | None = None) -> FastAPI:
             config=config,
             tracker=tracker,
         )
+        # Fallback on 429: retry with alternate model if configured
+        if response.status_code == 429 and config.model_fallbacks:
+            model = body.get("model", "")
+            fallback = config.model_fallbacks.get(model)
+            if fallback:
+                logger.info("Model %s returned 429, falling back to %s", model, fallback)
+                body["model"] = fallback
+                response = await _proxy_request(
+                    request=request,
+                    body=body,
+                    provider=Provider.ANTHROPIC,
+                    upstream_url=f"{config.anthropic_base_url}/v1/messages",
+                    config=config,
+                    tracker=tracker,
+                )
+        return response
 
     @app.post("/v1/chat/completions")
     async def openai_chat(request: Request) -> Response:

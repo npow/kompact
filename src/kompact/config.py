@@ -87,6 +87,10 @@ class KompactConfig:
     openai_base_url: str = "https://api.openai.com"
     verbose: bool = False
 
+    # Model fallbacks: if primary model returns 429, retry with the fallback.
+    # e.g. {"claude-sonnet-4-6": "claude-sonnet-4-5-20250929"}
+    model_fallbacks: dict[str, str] = field(default_factory=dict)
+
     toon: ToonConfig = field(default_factory=ToonConfig)
     observation_masker: ObservationMaskerConfig = field(default_factory=ObservationMaskerConfig)
     cache_aligner: CacheAlignerConfig = field(default_factory=CacheAlignerConfig)

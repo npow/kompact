@@ -23,6 +23,7 @@ def _build_plist(
     anthropic_base_url: str,
     openai_base_url: str,
     verbose: bool,
+    fallbacks: tuple[str, ...] = (),
 ) -> dict:
     args = [
         _uv_path(), "run", "--project", str(Path(__file__).resolve().parents[2]),
@@ -34,6 +35,8 @@ def _build_plist(
     ]
     if verbose:
         args.append("--verbose")
+    for fb in fallbacks:
+        args.extend(["--fallback", fb])
 
     return {
         "Label": PLIST_LABEL,
@@ -74,6 +77,11 @@ def cli():
     help="Upstream OpenAI API URL",
 )
 @click.option("--no-otel", is_flag=True, help="Disable OpenTelemetry tracing and metrics")
+@click.option(
+    "--fallback",
+    multiple=True,
+    help="Model fallback on 429 (e.g. --fallback claude-sonnet-4-6=claude-sonnet-4-5-20250929)",
+)
 def proxy(
     port: int,
     host: str,
@@ -82,6 +90,7 @@ def proxy(
     anthropic_base_url: str,
     openai_base_url: str,
     no_otel: bool,
+    fallback: tuple[str, ...],
 ):
     """Start the Kompact optimization proxy."""
     import uvicorn
@@ -101,12 +110,22 @@ def proxy(
                 err=True,
             )
 
+    # Parse fallback mappings
+    model_fallbacks = {}
+    for f in fallback:
+        if "=" not in f:
+            click.echo(f"Warning: Invalid fallback '{f}', expected MODEL=FALLBACK", err=True)
+            continue
+        primary, alt = f.split("=", 1)
+        model_fallbacks[primary] = alt
+
     config = KompactConfig(
         host=host,
         port=port,
         verbose=verbose,
         anthropic_base_url=anthropic_base_url,
         openai_base_url=openai_base_url,
+        model_fallbacks=model_fallbacks,
     )
 
     # Disable requested transforms
@@ -123,6 +142,9 @@ def proxy(
     click.echo(f"  Anthropic upstream: {anthropic_base_url}")
     click.echo(f"  OpenAI upstream: {openai_base_url}")
     click.echo(f"  Disabled transforms: {', '.join(disable) or 'none'}")
+    if model_fallbacks:
+        for primary, alt in model_fallbacks.items():
+            click.echo(f"  Fallback: {primary} -> {alt}")
     click.echo(f"  Dashboard: http://{host}:{port}/dashboard")
 
     uvicorn.run(app, host=host, port=port, log_level="info" if verbose else "warning")
@@ -140,12 +162,24 @@ def service():
 @click.option("--verbose", is_flag=True, help="Enable verbose logging")
 @click.option("--anthropic-base-url", default="https://api.anthropic.com")
 @click.option("--openai-base-url", default="https://api.openai.com")
-def install(port: int, host: str, verbose: bool, anthropic_base_url: str, openai_base_url: str):
+@click.option(
+    "--fallback",
+    multiple=True,
+    help="Model fallback on 429 (e.g. --fallback claude-sonnet-4-6=claude-sonnet-4-5-20250929)",
+)
+def install(
+    port: int,
+    host: str,
+    verbose: bool,
+    anthropic_base_url: str,
+    openai_base_url: str,
+    fallback: tuple[str, ...],
+):
     """Install and start the Kompact launchd service."""
     log_dir = Path.home() / ".kompact"
     log_dir.mkdir(exist_ok=True)
 
-    plist = _build_plist(port, host, anthropic_base_url, openai_base_url, verbose)
+    plist = _build_plist(port, host, anthropic_base_url, openai_base_url, verbose, fallback)
 
     # Unload existing if present
     if PLIST_PATH.exists():
