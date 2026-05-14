@@ -60,6 +60,14 @@ class LogCompressorConfig:
 
 
 @dataclass
+class HtmlStripperConfig:
+    enabled: bool = True
+    min_chars: int = 500
+    nav_link_ratio: float = 0.6  # Chunk with >= this fraction of link lines = nav
+    strip_footer_sections: bool = True
+
+
+@dataclass
 class ContentCompressorConfig:
     enabled: bool = True
     target_ratio: float = 0.5  # Keep 50% of tokens
@@ -99,6 +107,7 @@ class KompactConfig:
     code_compressor: CodeCompressorConfig = field(default_factory=CodeCompressorConfig)
     log_compressor: LogCompressorConfig = field(default_factory=LogCompressorConfig)
     content_compressor: ContentCompressorConfig = field(default_factory=ContentCompressorConfig)
+    html_stripper: HtmlStripperConfig = field(default_factory=HtmlStripperConfig)
     store: StoreConfig = field(default_factory=StoreConfig)
 
     @property
@@ -107,7 +116,7 @@ class KompactConfig:
         for name in [
             "toon", "observation_masker", "cache_aligner",
             "json_crusher", "schema_optimizer", "code_compressor",
-            "log_compressor", "content_compressor",
+            "log_compressor", "content_compressor", "html_stripper",
         ]:
             if not getattr(getattr(self, name), "enabled"):
                 disabled.add(name)

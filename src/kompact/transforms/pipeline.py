@@ -3,7 +3,8 @@
 Runs transforms in layer order:
   Layer 1: Schema Optimizer (tool definitions — TF-IDF selection)
   Layer 2: Content Compressors (TOON, JSON Crusher, Code, Logs)
-  Layer 2b: Content Compressor (extractive text compression)
+  Layer 2b: HTML Stripper (WebFetch nav/chrome removal)
+  Layer 2c: Content Compressor (extractive text compression)
   Layer 3: Observation Masker (history management)
   Layer 4: Cache Aligner (prefix caching)
 
@@ -18,6 +19,7 @@ from kompact.transforms import (
     cache_aligner,
     code_compressor,
     content_compressor,
+    html_stripper,
     json_crusher,
     log_compressor,
     observation_masker,
@@ -104,7 +106,14 @@ def run(request: Request, config: KompactConfig) -> PipelineResult:
         results.append(result)
         total_saved += result.tokens_saved
 
-    # Layer 2b: Extractive content compression (for prose/long text)
+    # Layer 2b: HTML/nav stripping (WebFetch chrome removal — runs before extractive compression)
+    if config.html_stripper.enabled:
+        result = html_stripper.transform(messages, config.html_stripper)
+        messages = result.messages
+        results.append(result)
+        total_saved += result.tokens_saved
+
+    # Layer 2c: Extractive content compression (for prose/long text)
     if config.content_compressor.enabled:
         result = content_compressor.transform(messages, config.content_compressor)
         messages = result.messages
