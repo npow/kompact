@@ -233,58 +233,66 @@ async def _forward_upstream(
         "content-encoding", "transfer-encoding", "content-length", "connection",
     })
 
-    async with httpx.AsyncClient(timeout=300.0) as client:
-        if is_streaming:
-            upstream_resp = await client.send(
-                client.build_request(
-                    "POST",
-                    upstream_url,
-                    json=optimized_body,
-                    headers=forward_headers,
-                ),
-                stream=True,
-            )
-
-            async def stream_response():
-                async for chunk in upstream_resp.aiter_raw():
-                    yield chunk
-                await upstream_resp.aclose()
-
-            response_headers = {
-                k: v for k, v in upstream_resp.headers.items()
-                if k.lower() not in _hop_headers
-            }
-            response_headers["x-kompact-tokens-saved"] = str(metrics.tokens_saved)
-            response_headers["x-kompact-compression-ratio"] = f"{metrics.compression_ratio:.3f}"
-            response_headers["x-kompact-latency-ms"] = f"{metrics.latency_ms:.1f}"
-
-            return StreamingResponse(
-                stream_response(),
-                status_code=upstream_resp.status_code,
-                headers=response_headers,
-                media_type=upstream_resp.headers.get("content-type", "text/event-stream"),
-            )
-        else:
-            upstream_resp = await client.post(
+    if is_streaming:
+        # Don't use `async with` for the streaming client — the client must
+        # remain open until StreamingResponse has consumed the full body.
+        # Using `async with` here would close the client (and its sockets)
+        # when the function returns, causing httpx.ReadError mid-stream.
+        streaming_client = httpx.AsyncClient(timeout=300.0)
+        upstream_resp = await streaming_client.send(
+            streaming_client.build_request(
+                "POST",
                 upstream_url,
                 json=optimized_body,
                 headers=forward_headers,
-            )
+            ),
+            stream=True,
+        )
 
-            response_headers = {
-                k: v for k, v in upstream_resp.headers.items()
-                if k.lower() not in _hop_headers
-            }
-            response_headers["x-kompact-tokens-saved"] = str(metrics.tokens_saved)
-            response_headers["x-kompact-compression-ratio"] = f"{metrics.compression_ratio:.3f}"
-            response_headers["x-kompact-latency-ms"] = f"{metrics.latency_ms:.1f}"
+        async def stream_response():
+            try:
+                async for chunk in upstream_resp.aiter_raw():
+                    yield chunk
+            finally:
+                await upstream_resp.aclose()
+                await streaming_client.aclose()
 
-            return Response(
-                content=upstream_resp.content,
-                status_code=upstream_resp.status_code,
-                headers=response_headers,
-                media_type=upstream_resp.headers.get("content-type"),
-            )
+        response_headers = {
+            k: v for k, v in upstream_resp.headers.items()
+            if k.lower() not in _hop_headers
+        }
+        response_headers["x-kompact-tokens-saved"] = str(metrics.tokens_saved)
+        response_headers["x-kompact-compression-ratio"] = f"{metrics.compression_ratio:.3f}"
+        response_headers["x-kompact-latency-ms"] = f"{metrics.latency_ms:.1f}"
+
+        return StreamingResponse(
+            stream_response(),
+            status_code=upstream_resp.status_code,
+            headers=response_headers,
+            media_type=upstream_resp.headers.get("content-type", "text/event-stream"),
+        )
+
+    async with httpx.AsyncClient(timeout=300.0) as client:
+        upstream_resp = await client.post(
+            upstream_url,
+            json=optimized_body,
+            headers=forward_headers,
+        )
+
+        response_headers = {
+            k: v for k, v in upstream_resp.headers.items()
+            if k.lower() not in _hop_headers
+        }
+        response_headers["x-kompact-tokens-saved"] = str(metrics.tokens_saved)
+        response_headers["x-kompact-compression-ratio"] = f"{metrics.compression_ratio:.3f}"
+        response_headers["x-kompact-latency-ms"] = f"{metrics.latency_ms:.1f}"
+
+        return Response(
+            content=upstream_resp.content,
+            status_code=upstream_resp.status_code,
+            headers=response_headers,
+            media_type=upstream_resp.headers.get("content-type"),
+        )
 
 
 def _estimate_tokens(body: dict[str, Any]) -> int:
